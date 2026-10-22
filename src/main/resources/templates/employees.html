@@ -9,14 +9,18 @@
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
         th { background: #f2f2f2; }
         .error { color: red; font-size: 0.85rem; }
-        .success { color: green; }
+        .success { color: green; font-weight: bold; margin-bottom: 15px; }
         input { margin-bottom: 4px; padding: 4px; }
+        .search-container { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
 <h2>Employee Registration</h2>
+
+<!-- Success Message -->
 <p class="success" th:if="${success}" th:text="${success}"></p>
 
+<!-- Add Employee Form -->
 <form th:action="@{/employees}" th:object="${employee}" method="post">
     <div>
         <input type="text" th:field="*{fullName}" placeholder="Full name">
@@ -42,7 +46,18 @@
 </form>
 
 <hr>
+
+<!-- Task 11: Search Bar -->
+<form th:action="@{/employees}" method="get" class="search-container">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by name..." style="width: 250px;">
+    <button type="submit">Search</button>
+    <!-- Clear button only shows if a search was made -->
+    <a th:href="@{/employees}" th:if="${keyword != null and !keyword.isEmpty()}" style="color: red; text-decoration: none; font-weight: bold;">Clear ✖</a>
+</form>
+
 <h3>Employees (<span th:text="${#lists.size(employees)}">0</span>)</h3>
+
+<!-- Employee Table -->
 <table>
     <thead>
     <tr>
@@ -60,6 +75,7 @@
         <td th:text="${e.salary}"></td>
         <td>
             <a th:href="@{/employees/{id}/edit(id=${e.id})}">Edit</a>
+            
             <form th:action="@{/employees/{id}/delete(id=${e.id})}" method="post" style="display:inline"
                   onsubmit="return confirm('Delete this employee?');">
                 <button type="submit">Delete</button>
@@ -67,7 +83,7 @@
         </td>
     </tr>
     <tr th:if="${#lists.isEmpty(employees)}">
-        <td colspan="7">No employees yet.</td>
+        <td colspan="7" style="text-align: center;">No employees found.</td>
     </tr>
     </tbody>
 </table>

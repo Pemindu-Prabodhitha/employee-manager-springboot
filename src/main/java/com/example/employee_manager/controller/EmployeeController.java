@@ -19,13 +19,20 @@ public class EmployeeController {
         this.service = service;
     }
 
-    // READ - show form + table
+    // READ - show form + table (UPDATED for Task 11 Search)
     @GetMapping
-    public String list(Model model) {
+    public String list(@RequestParam(value = "keyword", required = false) String keyword, 
+                       Model model) {
         if (!model.containsAttribute("employee")) {
             model.addAttribute("employee", new Employee());
         }
-        model.addAttribute("employees", service.findAll());
+        
+        // Use the search method from the service
+        model.addAttribute("employees", service.searchByName(keyword));
+        
+        // Keep the keyword so it stays in the search box
+        model.addAttribute("keyword", keyword); 
+        
         return "employees";
     }
 
